@@ -15,9 +15,11 @@ import graphqlHTTP from 'express-graphql'
 
 // Import GraphQL Queries
 import userQueries from './models/user/userQueries'
+import annonceQueries from './models/annonces/annonceQueries'
 
 // Import GraphQL Mutations
 import userMutations from './models/user/userMutations'
+import annonceMutations from './models/annonces/annonceMutations'
 
 // Setup GraphQL RootQuery
 let RootQuery = new GraphQLObjectType({
@@ -27,7 +29,9 @@ let RootQuery = new GraphQLObjectType({
     user: userQueries.user,
     users: userQueries.users,
     userId: userQueries.userId,
-    userByName: userQueries.userByName
+    userByName: userQueries.userByName,
+    annonces: annonceQueries.annonces,
+    annonceId:annonceQueries.annonceId
   })
 })
 
@@ -37,7 +41,9 @@ let RootMutation = new GraphQLObjectType({
   description: 'Realize Root Mutations',
   fields: () => ({
     addUser: userMutations.addUser,
-    updateUser: userMutations.updateUser
+    updateUser: userMutations.updateUser,
+    addAnnonce:annonceMutations.addAnnonce,
+    updateAnnonce:annonceMutations.updateAnnonce
   })
 })
 
