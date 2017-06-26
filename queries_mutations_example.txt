@@ -1,0 +1,74 @@
+mutation{
+  addRDV(_de:"59511eb5b5078c11e6fe1fcc",
+    _avec:"59511efdb5078c11e6fe1fce",
+  _annonce:"595015f523149e1b3bd998bf",
+  description:"new RDV",
+  )
+}
+
+mutation{
+  addRDV(_de:"59511eb5b5078c11e6fe1fcc",
+    _avec:"59511efdb5078c11e6fe1fce",
+  _annonce:"595015f523149e1b3bd998bf",
+  description:"new RDV",
+    date:"2017-11-02"
+  ) {
+    id
+     etat
+  }
+}
+
+
+query{
+  RDVs(avecEtat:ANNULE){
+    id
+  }
+}
+
+
+mutation{
+  updateRDV(id:"595134b936e07c222814ca8a", etat:ANNULE){
+		etat
+  }
+}
+
+
+mutation{
+  addAnnonce(
+    _proprietaire:"59511efdb5078c11e6fe1fce", 
+    wilaya:"Tipaza", 
+    commune:"Kolea",
+    description:"lool", 
+    vue:0,
+    note:4,
+    adresse:"hello world",
+    superficie:200,
+    typeLogement:STUDIO
+  ){
+    wilaya
+  }
+}
+
+
+
+query{
+  annonceId(id:"5951701c9dc8b3413d3e85a8"){
+    _id
+    _proprietaire{
+      ... on Member{
+        firstname
+      }
+    }
+    wilaya,
+    commune
+  }
+}
+
+
+// incrementer le compteur des vues d'une annonce
+
+mutation{
+  updateAnnonce(id:"5951701c9dc8b3413d3e85a8"){
+    vue
+  }
+}
