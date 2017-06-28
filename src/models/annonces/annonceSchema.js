@@ -14,14 +14,17 @@ var annonceSchema= new mongoose.Schema({
   	wilaya:String,
   	commune:String,
     typeLogement:String,
+    prix:Number,
+    designation:String,
     //   type:mongoose.Schema.Types.ObjectId, ref: 'typeLogement'
     // },
-  	// Localisation:{
-  		// lat:Number,
-  		// lon:Number
-  	// },
+  	lat:Number,
+  	log:Number,
   	description:String,
     _proprietaire:{ type: mongoose.Schema.Types.ObjectId, ref: 'member', required:true },
+    _commentaires:[
+      {id:{ type: mongoose.Schema.Types.ObjectId, ref: 'commentaire'}}
+    ]
 
 
 });
@@ -33,13 +36,43 @@ let annonce = mongoose.model('annonce', annonceSchema,"annonce");
 module.exports=annonce;
 
 
-module.exports.getListOfAnnonces = () => {
+module.exports.getListOfAnnonces = (root,{typeLogement}) => {
+  
   return new Promise((resolve, reject) => {
-    annonce.find({})
+    console.log("typeLog avant find"+typeLogement)
+    // if (typeLogement){
+    var typeLog=""; 
+
+      if(typeLogement==0){
+         typeLog="STUDIO";
+      }
+      else if(typeLogement==1){
+         typeLog="F2";
+      }
+      else if(typeLogement==2){
+         typeLog="F3";
+      }
+      else if(typeLogement==3){
+         typeLog="VILLA";
+      }
+      else if(typeLogement==4){
+         typeLog="F4";
+      }
+      else if(typeLogement==5){
+         typeLog="F5";
+      }
+      else {
+        typeLog=""; 
+      }
+    // }
+    console.log("typeLog avant find"+typeLog)
+    annonce.find({typeLogement:{
+       $regex: typeLog, $options: 'i'
+    }})
     // .exec((err, res) => {
     //   err ? reject(err) : resolve(res);
     // });
-    .populate("_proprietaire").
+    .populate("_proprietaire _commentaires.id").
     exec(function (err, annonce) {
       if (err) return handleError(err);
       console.log('annonce here %s', annonce);
@@ -62,7 +95,7 @@ module.exports.getAnnonceById = (root, {id}) => {
     //   err ? reject(err) : resolve(annonce);
     //   console.log('annonce here %s', annonce);
     // });
-    .populate("_proprietaire").
+    .populate("_proprietaire _commentaires.id").
     exec(function (err, annonce) {
       if (err) return handleError(err);
       console.log('annonce here %s', annonce);
@@ -76,7 +109,7 @@ module.exports.getAnnonceById = (root, {id}) => {
 };
 
 
-module.exports.getAnnoncesByWilaya = (root, {wilaya, typeLogement}) => {
+module.exports.getAnnoncesByWilaya = (root, {wilaya}) => {
   return new Promise((resolve, reject) => {
     annonce.find({
       wilaya: wilaya
@@ -90,7 +123,29 @@ module.exports.getAnnoncesByWilaya = (root, {wilaya, typeLogement}) => {
 
 
 
-module.exports.addAnnonce = (root, {_proprietaire, wilaya, commune ,description, vue, adresse, note,superficie,typeLogement}) => {
+module.exports.addAnnonce = (root, {_proprietaire,lat,log, wilaya, commune ,description, vue, adresse, note,superficie,typeLogement, prix,designation}) => {
+  
+  var typeLog="";
+      if(typeLogement==0){
+         typeLog="STUDIO";
+      }
+      else if(typeLogement==1){
+         typeLog="F2";
+      }
+      else if(typeLogement==2){
+         typeLog="F3";
+      }
+      else if(typeLogement==3){
+         typeLog="VILLA";
+      }
+      else if(typeLogement==4){
+         typeLog="F4";
+      }
+      else if(typeLogement==5){
+         typeLog="F5";
+      }
+    console.log("typeLog "+typeLog)
+
   var newAnnonce = new annonce({
       _proprietaire:_proprietaire, 
       wilaya:wilaya,
@@ -100,7 +155,12 @@ module.exports.addAnnonce = (root, {_proprietaire, wilaya, commune ,description,
       adresse:adresse,
       superficie:superficie,
       note:note,
-      typeLogement:typeLogement
+      typeLogement:typeLog,
+      prix:prix,
+      designation:designation,
+      _commentaires:[],
+      lat:lat,
+      log:log
     });
 
   return new Promise((resolve, reject) => {

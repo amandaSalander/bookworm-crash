@@ -5,7 +5,8 @@ import {
   GraphQLInt,
   GraphQLNonNull,
   GraphQLList,
-  GraphQLID
+  GraphQLID,
+  GraphQLFloat
   } from 'graphql';
 
 import annonceType from './annonceType';
@@ -51,7 +52,23 @@ export default {
       },
       typeLogement:{
         type:typeLogement
-      }
+      },
+      prix:{
+        name:"prix",
+        type: GraphQLInt
+      },
+      designation:{
+        name:"designation",
+        type: GraphQLString
+      },
+      lat:{
+        name:"lat",
+        type: GraphQLFloat
+      },
+      log:{
+        name:"log",
+        type: GraphQLFloat
+      },
     },
     resolve: annonce.addAnnonce
   },

@@ -10,13 +10,9 @@ import {
   } from 'graphql';
 
 export default new GraphQLEnumType({
-  name: 'TypeLogement',
+  name: 'TypeRDV',
   values: {
-    STUDIO: { value: 0 },
-    F2: { value: 1 },
-    F3: { value: 2 },
-    VILLA:{ value:3},
-    F4: { value: 4 },
-    F5: { value: 5 }
+    RECIEVED: { value: 0 },
+    DEMANDED: { value: 1 }
   }
 });

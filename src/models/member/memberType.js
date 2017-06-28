@@ -12,19 +12,47 @@ import {
 
 import Annonced from '../utils/annoncedType' 
 
-
+console.log("Annonced form memberType "+Annonced)
 
 import annonceType from '../annonces/annonceType' 
 import annonce from '../annonces/annonceSchema' 
 
 
+import rendezvousType from '../rendez-vous/rendezvousType' 
+import rendezvous from '../rendez-vous/rendezvousSchema' 
+
 
 import mongoose from 'mongoose'
 
+var fa= new GraphQLObjectType({
+  name:"FA",
+  description:"Fa type for nothing just to have a simple thing like [{id}]",
+  fields:()=>({
+    _id: {
+      type: new GraphQLNonNull(GraphQLID)
+    },
+    id: {
+      type: Annonced
+    }
+  })
+});
+
+var pa= new GraphQLObjectType({
+  name:"PA",
+  description:"Fa type for nothing just to have a simple thing like [{id}]",
+  fields:()=>({
+    _id: {
+      type: new GraphQLNonNull(GraphQLID)
+    },
+    id: {
+      type: rendezvousType
+    }
+  })
+});
 
 
 // Define our user type, with two string fields; `id` and `name`
-export default new GraphQLObjectType({
+var memberType= new GraphQLObjectType({
   name: 'Member',
   description: 'A Member, future user of our announce location application',
   fields: () => ({
@@ -50,7 +78,13 @@ export default new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLString)
     },
     _annonces:{
-        type: new GraphQLList(annonceType)
+        type:new GraphQLNonNull( new GraphQLList(fa))
+    },
+    _rdvs:{
+        type:new GraphQLNonNull( new GraphQLList(pa))
     }
   })
 });
+
+
+export default memberType;

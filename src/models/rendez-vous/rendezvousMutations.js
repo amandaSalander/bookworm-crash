@@ -12,6 +12,7 @@ import {
 import rendezvousType from './rendezvousType';
 import rendezvous from './rendezvousSchema';
 
+import typeRDVType from '../utils/typeRDVType'
 
 import etatRDV from '../utils/etatRDVType'
 
@@ -19,10 +20,10 @@ export default {
   addRendezVous:{
     type:rendezvousType,
     args: {
-      id:{
-        name:"id",
-        type:new GraphQLNonNull(GraphQLID)
-      },
+      // id:{
+      //   name:"id",
+      //   type:new GraphQLNonNull(GraphQLID)
+      // },
       _de:{
         name:'_de',
         type:new GraphQLNonNull(GraphQLString)
@@ -42,7 +43,11 @@ export default {
       description:{
 	  	  name:'_description',
 	  	  type:GraphQLString
-	   }
+	    },
+      typeRDV:{
+        type:typeRDVType
+      }
+
     },
     resolve: rendezvous.addRDV
   },

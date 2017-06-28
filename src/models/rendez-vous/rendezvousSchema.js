@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
 
+
+import member from '../member/memberSchema';
+
 var rendezvousSchema = new mongoose.Schema({
   id: { type:String, required:true, unique:true, index:true, default:mongoose.Types.ObjectId },
   _de: { type: mongoose.Schema.Types.ObjectId, ref: 'member' },
@@ -10,7 +13,8 @@ var rendezvousSchema = new mongoose.Schema({
   	required:true
   },
   description: String,
-  etat:String
+  etat:String,
+  typeRDV:String
 });
 
 let rendezvous = mongoose.model('rendezvous', rendezvousSchema);
@@ -34,10 +38,12 @@ module.exports.getListOfRDVs = (root,{avecEtat}) => {
       etatLocal="ACCEPTE";
     }
     else{
-      etatLocal=undefined;
+      etatLocal="";
     }
 
-    rendezvous.find({etat:etatLocal})
+    rendezvous.find({etat:{
+                            $regex: etatLocal, $options: 'i'
+                          }})
     // .exec((err, res) => {
     //   err ? reject(err) : resolve(res);
     // });
@@ -83,18 +89,48 @@ module.exports.getListOfRDVs = (root,{avecEtat}) => {
 
 
 
-module.exports.addRDV = (root, {_de, _avec,_annonce,date, description}) => {
+module.exports.addRDV = (root, {_de, _avec,_annonce,date, description, typeRDV}) => {
+  var typeR=""; 
+
+      if(typeRDV==0){
+         typeR="RECIEVED";
+      }
+      else {
+        typeR="DEMANDED"; 
+      }
+
   var newRDV = new rendezvous({_de:_de,
   	_avec:_avec,
   	_annonce:_annonce,
   	date:date,
   	description:description,
-    etat:"EN_ATTENTE"
+    etat:"EN_ATTENTE",
+    typeRDV:typeR
   });
 
   return new Promise((resolve, reject) => {
     newRDV.save((err, res) => {
       err ? reject(err): resolve(res);
+
+      member.findOneAndUpdate(
+        { _id:  _de },
+        { $push:{"_rdvs":{ id: res._id}}},
+        {safe: true, upsert: true, new : true}
+      ).
+      exec((err, res)=>{
+          err ? reject(err) : resolve(res);
+          // console.log(res.annonces[0].id.commune);
+      });
+
+      member.findOneAndUpdate(
+        { _id:  _avec },
+        { $push:{"_rdvs":{ id: res._id}}},
+        {safe: true, upsert: true, new : true}
+      ).
+      exec((err, res)=>{
+          err ? reject(err) : resolve(res);
+          // console.log(res.annonces[0].id.commune);
+      });
     });
   });
 }
@@ -118,7 +154,7 @@ module.exports.updateRDV = (root, {id,_de, _avec,_annonce, date,etat, descriptio
     }
 
 
-  var newRDV = {_de:_de,_avec:_avec,_annonce:_annonce,date:date,description:description,etat:etatLocal};
+  var newRDV = {/*_de:_de,_avec:_avec,_annonce:_annonce,date:date,description:description,*/etat:etatLocal};
 
   return new Promise((resolve, reject) => {
     rendezvous.findOneAndUpdate(

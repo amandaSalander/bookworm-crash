@@ -13,6 +13,7 @@ import {
 
 import proprieatireType from '../utils/proprieatireType'
 import annoncedType from '../utils/annoncedType'
+import typeRDVType from '../utils/typeRDVType'
 import annonceType from '../annonces/annonceType'
 
 // Define our user type, with two string fields; `id` and `name`
@@ -34,8 +35,8 @@ export default new GraphQLObjectType({
       type: new GraphQLNonNull(proprieatireType)
     },
     _annonce:{
-      type: new GraphQLNonNull(GraphQLString)
-      // type: new GraphQLNonNull(annoncedType)
+      // type: new GraphQLNonNull(GraphQLString)
+      type: new GraphQLNonNull(annoncedType)
     },
     date:{
       type: GraphQLString
@@ -45,6 +46,9 @@ export default new GraphQLObjectType({
     },
     etat:{
       type: GraphQLString
+    },
+    typeRDV:{
+      type:GraphQLString
     }
   }),
   inputFields:()=>({

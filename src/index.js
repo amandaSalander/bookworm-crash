@@ -29,10 +29,11 @@ import annonceMutations from './models/annonces/annonceMutations'
 import memberMutations from './models/member/memberMutations'
 // import typeLogementMutations from './models/utils/typeLogementMutations'
 import rendezvousMutations from './models/rendez-vous/rendezvousMutations'
+import commentaireMutations from './models/commentaire/commentaireMutations'
 
 
 
-
+const cors = require('cors');
 
 // Setup GraphQL RootQuery
 let RootQuery = new GraphQLObjectType({
@@ -47,6 +48,7 @@ let RootQuery = new GraphQLObjectType({
     annonceId:annonceQueries.annonceId,
     members:memberQueries.members,
     memberId:memberQueries.memberId,
+    memberEmail:memberQueries.memberEmail,
     RDVs:rendezvousQueries.RDVs
   })
 })
@@ -65,7 +67,8 @@ let RootMutation = new GraphQLObjectType({
     memberId:memberQueries.memberId,
     // addType:typeLogementMutations.addType,
     addRDV:rendezvousMutations.addRendezVous,
-    updateRDV:rendezvousMutations.updateRDV
+    updateRDV:rendezvousMutations.updateRDV,
+    addCommentaire:commentaireMutations.addCommentaire
 
     
   }),
@@ -87,6 +90,7 @@ import express from 'express'
 mongoose.connect('mongodb://localhost/graphql-express-mongodb')
 
 
+
 var db = mongoose.connection;
 mongoose.Promise = global.Promise;
 
@@ -102,7 +106,7 @@ db.once('open', function() {
 
   // Set up Express and integrate with our GraphQL Schema and configure to use graphiql
   var app = express()
-  app.use('/graphql', graphqlHTTP({ schema: schema, graphiql: true }))
+  app.use('/graphql',cors(), graphqlHTTP({ schema: schema, graphiql: true }))
   app.listen('3000')
 
   var status = {

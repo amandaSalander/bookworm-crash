@@ -72,3 +72,175 @@ mutation{
     vue
   }
 }
+
+
+mutation{
+  addRDV(_de:"59511eb5b5078c11e6fe1fcc",
+    _avec:"59511efdb5078c11e6fe1fce",
+  _annonce:"595015f523149e1b3bd998bf",
+  description:"new RDV",
+    date:"2017-02-22"
+  ) {
+    id
+     etat
+  }
+}
+
+
+query{
+  RDVs{
+    _id
+    id
+    _de{
+      ... on Member{
+        firstname
+        lastname
+      }
+    }
+    _avec{
+      ... on Member{
+        firstname
+        lastname
+      }
+    }
+    date
+    description
+    etat
+  }
+}
+
+
+{
+  RDVs{
+    id
+    _de{
+      __typename
+      ... on Member{
+        firstname
+      }
+    }
+    _annonce{
+      __typename
+      ... on Annonces{
+        wilaya
+      }
+    }
+  }
+}
+
+
+
+query{
+  memberId(id:"594f9739ea2e9e518d786be8"){
+    id
+    _annonces {
+      _id
+      id{
+        __typename
+        ... on Annonces{
+          id
+          wilaya
+        }
+      }
+    }
+  }
+}
+
+mutation{
+  addRDV(_de:"59511eb5b5078c11e6fe1fcc",
+    _avec:"59511efdb5078c11e6fe1fce",
+  _annonce:"5951794b0e3f1e49c2be9c38",
+  description:"new RDV",
+    date:"2017-02-22",
+    typeRDV:DEMANDED
+  ) {
+    id
+     etat
+  }
+}
+
+
+query{
+  memberId(id:"59511efdb5078c11e6fe1fcd") {
+    _id
+    id
+    _annonces{
+      id{
+        __typename 
+        ... on Annonces{
+          _id
+          wilaya
+        }
+      }
+      _id
+    }
+    _rdvs{
+      _id
+      id{
+        __typename
+        ... on RendezVous{
+          id
+        }
+      }
+    }
+  }
+}
+
+
+query{
+  memberId(id:"59511efdb5078c11e6fe1fcd") {
+    _id
+    id
+    _annonces{
+      id{
+        __typename 
+        ... on Annonces{
+          _id
+          wilaya
+        }
+      }
+      _id
+    }
+    _rdvs{
+      _id
+      id{
+        __typename
+        ... on RendezVous{
+          id
+          description
+          etat
+          typeRDV
+        }
+      }
+    }
+  }
+}
+
+
+mutation{
+  addCommentaire(_de:"594f9739ea2e9e518d786be9",_annonce:"5951794b0e3f1e49c2be9c38",note:4,
+  description:"belle maison mais proprietaire grincheux -_- !"){
+    description
+  }
+}
+
+query{
+  annonces{
+    id
+    _commentaires{
+      id{
+        __typename
+        ... on Commentaire{
+          description
+          note
+          _de{
+            ... on Member{
+              firstname
+              lastname
+            }
+          }
+        }
+      }
+    }
+  }
+}

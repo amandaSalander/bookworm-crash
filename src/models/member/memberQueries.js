@@ -24,6 +24,15 @@ export default {
       }
     },
     resolve: member.getMemberById
+  },
+  memberEmail: {
+    type: memberType,
+    args: {
+      email: {
+        type: GraphQLString
+      }
+    },
+    resolve: member.getMemberByEmail
   }
   // },
   // userByName: {

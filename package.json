@@ -11,6 +11,7 @@
   "author": "amandaSalander",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.3",
     "express": "^4.13.4",
     "express-graphql": "^0.4.9",
     "graphql": "^0.4.18",

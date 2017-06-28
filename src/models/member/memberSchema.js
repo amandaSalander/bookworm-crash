@@ -16,7 +16,12 @@ var memberSchema = new mongoose.Schema({
                 {
                   id:{ type: mongoose.Schema.Types.ObjectId, ref: 'annonce' }
                 }
-              ]
+              ],
+  _rdvs:  [
+                {
+                  id:{ type: mongoose.Schema.Types.ObjectId, ref: 'rendezvous' }
+                }
+          ]            
 }, {collection:"member"});
 
 let member = mongoose.model('member', memberSchema, "member");
@@ -30,9 +35,15 @@ module.exports = mongoose.model('member', memberSchema);
 
 module.exports.getListOfMembers = () => {
   return new Promise((resolve, reject) => {
-    member.find({}).exec((err, res) => {
+    member.find({})
+    // .exec((err, res) => {
+    //   err ? reject(err) : resolve(res);
+    // });
+    .populate("_annonces.id _rdvs.id")
+    .exec((err,res)=>{
       err ? reject(err) : resolve(res);
-    });
+      console.log("res "+res)
+    })
   });
 };
 
@@ -45,7 +56,24 @@ module.exports.getMemberById = (root, {id}) => {
     // .exec((err, res) => {
     //   err ? reject(err) : resolve(res);
     // });
-    .populate("_annonces.id")
+    .populate("_annonces.id _rdvs.id")
+    .exec((err,res)=>{
+      err ? reject(err) : resolve(res);
+      console.log("res "+res)
+    })
+  });
+};
+
+
+module.exports.getMemberByEmail = (root, {email}) => {
+  return new Promise((resolve, reject) => {
+    member.findOne({
+        email: email
+    })
+    // .exec((err, res) => {
+    //   err ? reject(err) : resolve(res);
+    // });
+    .populate("_annonces.id _rdvs.id")
     .exec((err,res)=>{
       err ? reject(err) : resolve(res);
       console.log("res "+res)
@@ -61,7 +89,8 @@ module.exports.addMember = (root, {firstname, lastname, email, tel, password}) =
                               email:      email,
                               tel:        tel,
                               password:   password,
-                              annonces:   []
+                              _annonces:   [],
+                              _rdvs:    []
                           });
 
   return new Promise((resolve, reject) => {
